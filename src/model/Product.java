@@ -1,5 +1,10 @@
 package model;
 
+/*
+ * 
+ *  Enty from database
+ */
+
 public class Product {
     private Long id;
     private String name;

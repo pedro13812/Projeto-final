@@ -4,35 +4,39 @@ import model.Product;
 import repository.ProductRrepository;
 import service.CollectProductDataFromTerminal;
 import service.ITerminal;
+import service.ProductService;
 import service.TerminalService;
 
 public class App {
   public static void main(String[] args) throws Exception {
     var scanner = new Scanner(System.in);
     var terminalService = new TerminalService(scanner);
-    var productRrepository = new ProductRrepository();
+    var ProductRepository = new ProductRrepository();
+    var productService = new ProductService(ProductRepository);
     var collectProductDataFromTerminal = new CollectProductDataFromTerminal(terminalService);
-    var app = new App(terminalService, productRrepository, collectProductDataFromTerminal);
+    var app = new App(terminalService, productService, collectProductDataFromTerminal);
 
     app.run();
   }
 
   private final String menu = """
       1- Cadastrar um produto.
+      2 - LIstar produtos.
+      3 - Buscar por ID.
 
       0- Sair
       """;
 
   private ITerminal terminalService;
-  private ProductRrepository productRrepository;
+  private ProductService productService;
   private CollectProductDataFromTerminal collectProductDataFromTerminal;
 
   public App(
       ITerminal terminalService,
-      ProductRrepository productRrepository,
+      ProductService productService,
       CollectProductDataFromTerminal collectProductDataFromTerminal) {
     this.terminalService = terminalService;
-    this.productRrepository = productRrepository;
+    this.productService = productService;
     this.collectProductDataFromTerminal = collectProductDataFromTerminal;
 
   }
@@ -47,7 +51,8 @@ public class App {
       switch (option) {
 
         case 1 -> registerProduct();
-
+        case 2 -> showProducts();
+        case 3 -> showProductsById();
       }
 
     }
@@ -56,9 +61,43 @@ public class App {
 
   private void registerProduct() {
     var collectProduct = collectProductDataFromTerminal.collect();
-    var product = productRrepository.save(collectProduct);
+    var product = productService.insert(collectProduct);
+    System.out.println(" Registro salvo: %s".formatted(product));
+  }
 
-    System.out.println(" Registro salvo %s".formatted(product));
+  private void showProducts() {
+    var producst = productService.getAll();
+
+    terminalService.showMesseage("=== INICIO:LISTA DE PRODUTOS ===");
+
+    producst.stream().forEach(p -> {
+      terminalService.showMesseage("""
+           ( cod %s) %s
+          """.formatted(p.getId(), p.getName()));
+    });
+    terminalService.showMesseage("=== FIM:LISTA DE PRODUTOS ===");
+  }
+
+  private void showProductsById() {
+    terminalService.showMesseage(" digite o ID da busca:");
+    var id = terminalService.readLineAsInt();
+    var product = productService.findById(id);
+    if (product.isEmpty()) {
+      terminalService.showMesseage(" === PRODUTO ===");
+    } else {
+      var prod = product.get();
+      terminalService.showMesseage("""
+          ID:%s
+          NOME:%s
+          PREÇO:%s
+          ESTOQUE:%s
+          """.formatted(
+          prod.getId(),
+          prod.getName(),
+          ((float) prod.getValue() / 100.0f),
+          prod.getStock()));
+      terminalService.showMesseage("=== ===");
+    }
 
   }
 }
