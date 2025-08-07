@@ -1,34 +1,38 @@
 package service;
 
-
-/*
- * Interface to read user-provide data.
+/**
+ * Interface to IO user-provide data.
  */
-
 public interface ITerminal {
-    /*
-     * To write message for the user
-     * @param menssage
+    /**
+     * To write message for the user.
+     * @param message
      */
-    void showMesseage(String message);
-    /*
-     * to read input message by user.
+    void showMessage(String message);
+
+    /**
+     * To write message for the user and await a delay after message 
+     * to continue app execution.
+     * @param message
+     * @param delay
+     */
+    void showMessage(String message, int delay);
+
+    /**
+     * To read input message by user.
      * @return
      */
-
     String readLine();
 
-    /*
-     * to read input number by user.
-     * @rutern
+    /**
+     * To read input number by user.
+     * @return
      */
-
     int readLineAsInt();
 
-    /*
-     * to read input double number by user.
-     * @retunr
+    /**
+     * To read input double number by user.
+     * @return
      */
-
     double readLineAsDouble();
 }

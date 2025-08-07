@@ -3,33 +3,34 @@ package repository;
 import java.util.List;
 import java.util.Optional;
 
-/*
- * The interface of repository classes to manger database registers.
+/**
+ * Generic repository interface for managing database entities.
+ *
+ * @param <I> the type of the entity identifier
+ * @param <T> the type of the entity
  */
+public interface IRepository<I, T> {
 
-public interface IRepository <I, T> {
-
-    /*
-     * 
-     * @param enity - enity data to persist on database.
-     * @return new enity save/updated on database.
+    /**
+     * Saves or updates the given entity in the database.
+     *
+     * @param entity the entity to be persisted
+     * @return the saved or updated entity
      */
-    T save( T entity);
+    T save(T entity);
 
-    /*
-     * 
-     * Tryng find register by id on database.
-     * 
-     * @param id
-     * @return when fouded enity retunr it otherwise empty
+    /**
+     * Retrieves an entity by its identifier.
+     *
+     * @param id the identifier of the entity
+     * @return an {@code Optional} containing the found entity, or empty if not found
      */
+    Optional<T> findById(I id);
 
-    Optional<T> finById ( I id);
-  /*
-   * 
-   * List all entities on database.
-   * 
-   * @return all entities
-   */
+    /**
+     * Retrieves all entities from the database.
+     *
+     * @return a list of all entities
+     */
     List<T> findAll();
 }
